@@ -2,6 +2,10 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\InsuranceController;
+
+Route::get('/test', [AuthenticatedSessionController::class, 'test'])->name('test');
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -15,6 +19,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // INSURANCE
+    Route::resource('insurances', InsuranceController::class);
+    Route::get('insurances-data', [InsuranceController::class, 'getDataTable'])->name('insurances.data');
+
+    Route::get('signout', [AuthenticatedSessionController::class, 'signout'])->name('signout');
 });
 
 require __DIR__.'/auth.php';

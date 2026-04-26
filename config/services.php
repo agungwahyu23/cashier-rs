@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'auth' => [
+        'email' => env('AUTH_USERNAME'),
+        'password' => env('AUTH_PASSWORD'),
+    ]
+
 ];
