@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\InsuranceService;
-use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class InsuranceController extends Controller
 {
@@ -29,9 +29,9 @@ class InsuranceController extends Controller
      */
     public function getDataTable()
     {
-        $categories = Categories::query()->orderBy('created_at', 'desc');
+        $data = $this->insuranceService->getData();
 
-        return DataTables::of($categories)
+        return DataTables::of($data)
             ->rawColumns(['action'])
             ->toJson();
     }

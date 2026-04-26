@@ -6,27 +6,26 @@ use App\Helpers\Util;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
-class InsuranceService
+class PriceProceduresService
 {
     /**
      * Create a new class instance.
      */
     public function __construct()
     {
-        //
+
     }
 
     /**
      * Get Data from api resource
-     * Keep data with cache key data_insurance
+     * Keep data with cache key data-price-procedure
     */
-    public function getData() 
+    public function getData($idProcedure) 
     {
-        return Cache::remember('data-insurance', now()->addMinutes(60), function () 
+        return Cache::remember('data-price-procedure', now()->addMinutes(60), function () use ($idProcedure) 
         {
             $token = Util::getToken();
-    
-            $baseUrl = 'https://recruitment.rsdeltasurya.com/api/v1/insurances';
+            $baseUrl = 'https://recruitment.rsdeltasurya.com/api/v1/procedures/'.$idProcedure.'/prices';
     
             try {
                 $response = Http::withoutVerifying()
@@ -38,19 +37,12 @@ class InsuranceService
     
                 $response->throw();
                         
-                $data = $response->json()['insurances'] ?? null;
+                $data = $response->json()['prices'] ?? null;
                         
                 return $data;
             } catch (\Throwable $e) {
                 throw $e->getMessage();
             }
         });
-    }
-
-    public function getById($id)
-    {
-        $data = $this->getData();
-
-        return collect($data)->firstWhere('id', $id);
     }
 }

@@ -34,10 +34,9 @@
     <!-- DataTables -->
     <script src="https://cdn.datatables.net/2.3.6/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.3.6/js/dataTables.bootstrap5.js"></script>
-    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css"></script> --}}
-    {{-- <script src="https://cdn.datatables.net/2.3.6/css/dataTables.bootstrap5.css"></script> --}}
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
 
     @stack('stylesheet')
@@ -180,6 +179,16 @@
                 let currentTheme = html.getAttribute("data-bs-theme");
                 let newTheme = currentTheme === "light" ? "dark" : "light";
                 setTheme(newTheme);
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $('#select2').select2({
+                placeholder: '-- Pilih --',
+                allowClear: true,
+                width: '100%'
             });
         });
     </script>

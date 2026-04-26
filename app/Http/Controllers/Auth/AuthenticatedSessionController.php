@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
@@ -31,7 +32,6 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         $token = Util::getToken();
-        Cache::put('token_login', $token);
 
         return redirect()->intended(route('dashboard', absolute: false));
     }
@@ -63,11 +63,11 @@ class AuthenticatedSessionController extends Controller
 
     public function test(Request $request) 
     {
-        $res = Util::getToken();
+        $token = Util::getToken();
+        $idProcedure = '019c125d-a359-7156-99cd-e188ff48294c';
+        $baseUrl = 'https://recruitment.rsdeltasurya.com/api/v1/procedures/'.$idProcedure;
+                        
 
-        return response()->json([
-            'status' => true,
-            'body' => $res,
-        ]);
+        return response()->json($baseUrl);
     }
 }

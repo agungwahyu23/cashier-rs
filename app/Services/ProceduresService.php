@@ -6,7 +6,7 @@ use App\Helpers\Util;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
-class InsuranceService
+class ProceduresService
 {
     /**
      * Create a new class instance.
@@ -18,15 +18,14 @@ class InsuranceService
 
     /**
      * Get Data from api resource
-     * Keep data with cache key data_insurance
+     * Keep data with cache key data-procedures
     */
     public function getData() 
     {
-        return Cache::remember('data-insurance', now()->addMinutes(60), function () 
+        return Cache::remember('data-procedures', now()->addMinutes(60), function () 
         {
             $token = Util::getToken();
-    
-            $baseUrl = 'https://recruitment.rsdeltasurya.com/api/v1/insurances';
+            $baseUrl = 'https://recruitment.rsdeltasurya.com/api/v1/procedures';
     
             try {
                 $response = Http::withoutVerifying()
@@ -38,7 +37,7 @@ class InsuranceService
     
                 $response->throw();
                         
-                $data = $response->json()['insurances'] ?? null;
+                $data = $response->json()['procedures'] ?? null;
                         
                 return $data;
             } catch (\Throwable $e) {

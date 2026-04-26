@@ -21,6 +21,7 @@
                 <thead>
                     <tr>
                         <th>Nama</th>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -40,11 +41,12 @@
             processing: true,
             serverSide: true,
             ajax: {
-                url: '{{ route("insurances.data") }}',
+                url: '{{ route("procedures.data") }}',
                 type: 'GET'
             },
             columns: [
                 { data: 'name', name: 'name' },
+                { data: 'action', name: 'action', orderable: false, searchable: false }
             ],
             pageLength: 10,
             lengthMenu: [10, 25, 50, 100],
