@@ -1,58 +1,113 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Cashier RS Delta Surya
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistem Kasir untuk RS Delta Surya yang dibangun menggunakan Laravel. Proyek ini mencakup fitur manajemen transaksi dan pengiriman laporan otomatis via email.
 
-## About Laravel
+## Prasyarat
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Pastikan Anda telah menginstal perangkat lunak berikut di komputer Anda:
+- PHP >= 8.2 (rekomendasi 8.5)
+- Composer
+- Node.js & NPM
+- MySQL/MariaDB (atau Laragon)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Langkah Instalasi
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. **Clone Repositori**
+   ```bash
+   git clone https://github.com/agungwahyu23/cashier-rs-delta-surya.git
+   cd cashier-rs-delta-surya
+   ```
 
-## Learning Laravel
+2. **Instal Dependensi PHP**
+   ```bash
+   composer install
+   ```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+3. **Instal Dependensi Frontend**
+   ```bash
+   npm install
+   ```
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+4. **Konfigurasi Environment**
+   Salin file `.env.example` menjadi `.env`:
+   ```bash
+   cp .env.example .env
+   ```
+   Buka file `.env` dan sesuaikan konfigurasi database serta mailer Anda:
+   ```env
+   DB_DATABASE=cashier_rs_delta_surya
+   DB_USERNAME=root
+   DB_PASSWORD=
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+   MAIL_MAILER=smtp
+   MAIL_HOST=smtp.gmail.com
+   MAIL_PORT=587
+   MAIL_USERNAME=email_anda@gmail.com
+   MAIL_PASSWORD='password app dari 2FA'
+   MAIL_ENCRYPTION=tls
+   MAIL_FROM_ADDRESS=email_anda@gmail.com
+   MAIL_FROM_NAME="${APP_NAME}"
 
-## Agentic Development
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+   ```
+
+5. **Generate App Key**
+   ```bash
+   php artisan key:generate
+   ```
+
+6. **Migrasi Database & Seeding**
+   Pastikan database sudah dibuat di MySQL, lalu jalankan:
+   ```bash
+   php artisan migrate --seed
+   ```
+
+7. **Link Storage**
+   ```bash
+   php artisan storage:link
+   ```
+
+## Menjalankan Aplikasi
+
+1. **Menjalankan Server Laravel**
+   ```bash
+   php artisan serve
+   ```
+   Aplikasi akan tersedia di `http://127.0.0.1:8000`.
+
+2. **Menjalankan Vite (Frontend)**
+   Buka terminal baru dan jalankan:
+   ```bash
+   npm run dev
+   ```
+
+## Menjalankan Task Scheduler (Cron)
+
+Proyek ini memiliki fitur laporan transaksi otomatis yang berjalan setiap hari pada jam 01:00 AM. Untuk menjalankannya secara lokal (testing):
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+php artisan schedule:work
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Untuk menjalankan perintah laporan secara manual:
+```bash
+php artisan report:transactions
+```
 
-## Contributing
+## Akun Demo
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Setelah menjalankan seeder, Anda dapat login menggunakan akun berikut:
 
-## Code of Conduct
+| Peran | Email | Password |
+|-------|-------|----------|
+| Super Admin | `superadmin@demo.com` | `12345678` |
+| Kasir | `kasir@mailinator.com` | `12345678` |
+| Marketing | `marketing@mailinator.com` | `12345678` |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Fitur Utama
+- **Dashboard Marketing**: Visualisasi statistik asuransi dan kunjungan.
+- **Manajemen Transaksi**: Input transaksi dengan sistem draft dan validasi voucher.
+- **Laporan Otomatis**: Pengiriman laporan transaksi harian dalam format Excel ke email.
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Lisensi
+Proyek ini dilisensikan di bawah [MIT license](https://opensource.org/licenses/MIT).

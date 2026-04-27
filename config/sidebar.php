@@ -87,34 +87,34 @@ return [
             'roles' => ['admin'],
         ],
 
-        [
-            'menu' => 'roles-permissions',
-            'label' => 'Role & Permission',
-            'icon' => 'fas fa-user-shield',
-            'roles' => ['admin'],
-            'submenu' => [
-                [
-                    'menu' => 'roles',
-                    'label' => 'All Roles',
-                    // 'route' => 'roles.index',
-                    'icon' => 'fas fa-circle',
-                    'icon_size' => '0.4rem',
-                ],
-                [
-                    'menu' => 'add-role',
-                    'label' => 'Add Role',
-                    'href' => '#',
-                    'icon' => 'fas fa-circle',
-                    'icon_size' => '0.4rem',
-                ],
-                [
-                    'menu' => 'permissions',
-                    'label' => 'Permissions',
-                    'href' => '#',
-                    'icon' => 'fas fa-circle',
-                    'icon_size' => '0.4rem',
-                ],
-            ],
-        ],
+        // [
+        //     'menu' => 'roles-permissions',
+        //     'label' => 'Role & Permission',
+        //     'icon' => 'fas fa-user-shield',
+        //     'roles' => ['admin'],
+        //     'submenu' => [
+        //         [
+        //             'menu' => 'roles',
+        //             'label' => 'All Roles',
+        //             // 'route' => 'roles.index',
+        //             'icon' => 'fas fa-circle',
+        //             'icon_size' => '0.4rem',
+        //         ],
+        //         [
+        //             'menu' => 'add-role',
+        //             'label' => 'Add Role',
+        //             'href' => '#',
+        //             'icon' => 'fas fa-circle',
+        //             'icon_size' => '0.4rem',
+        //         ],
+        //         [
+        //             'menu' => 'permissions',
+        //             'label' => 'Permissions',
+        //             'href' => '#',
+        //             'icon' => 'fas fa-circle',
+        //             'icon_size' => '0.4rem',
+        //         ],
+        //     ],
+        // ],
     ],
 ];
