@@ -9,6 +9,7 @@ use App\Services\ProceduresService;
 use App\Services\TransactionService;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class TransactionController extends Controller
 {
@@ -57,6 +58,9 @@ class TransactionController extends Controller
                     $html .= '<a href="#" class="btn btn-success btn-sm" onclick="payTransaction(\'' . $data['id'] . '\')">Bayar</a> ';
                     $html .= '<a href="' . route('transactions.edit', $data['id']) . '" class="btn btn-warning btn-sm">Edit</a> ';
                     $html .= '<a href="#" class="btn btn-danger btn-sm" onclick="deleteData(\'' . $data['id'] . '\')">Hapus</a>';
+                } else {
+                    $html .= '<a href="' . route('transactions.show', $data['id']) . '" class="btn btn-info btn-sm">View</a> ';
+                    $html .= '<a href="' . route('transactions.print', $data['id']) . '" class="btn btn-secondary btn-sm" target="_blank">Cetak</a>';
                 }
                 return $html;
             })
@@ -140,7 +144,12 @@ class TransactionController extends Controller
      */
     public function show(Transaction $transaction)
     {
-        //
+        $data['title_page'] = 'Detail Transaksi';
+        $data['transaction'] = $transaction->load('details');
+        $data['insurances'] = $this->insuranceService->getData();
+        $data['procedures'] = $this->proceduresService->getData();
+
+        return view('transactions.show', $data);
     }
 
     /**
@@ -223,5 +232,21 @@ class TransactionController extends Controller
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
+    }
+
+    /**
+     * Print the specified transaction receipt.
+     */
+    public function print($id)
+    {
+        $transaction = Transaction::with('details')->findOrFail($id);
+        
+        $data = [
+            'transaction' => $transaction,
+            'title' => 'Bukti Pembayaran - ' . $transaction->invoice_number
+        ];
+
+        $pdf = Pdf::loadView('transactions.receipt', $data);
+        return $pdf->stream($transaction->invoice_number . '.pdf');
     }
 }
