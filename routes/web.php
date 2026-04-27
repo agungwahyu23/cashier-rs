@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\InsuranceController;
 use App\Http\Controllers\PriceProceduresController;
 use App\Http\Controllers\ProceduresController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\VoucherController;
 
 Route::get('/test', [AuthenticatedSessionController::class, 'test'])->name('test');
@@ -38,6 +39,12 @@ Route::middleware('auth')->group(function () {
     // VOUCHER
     Route::resource('vouchers', VoucherController::class);
     Route::get('vouchers-data', [VoucherController::class, 'getDataTable'])->name('vouchers.data');
+
+    // TRANSACTION
+    Route::resource('transactions', TransactionController::class);
+    Route::get('transactions-data', [TransactionController::class, 'getDataTable'])->name('transactions.data');
+    Route::get('transactions-get-voucher', [TransactionController::class, 'getVoucher'])->name('transactions.get-voucher');
+    Route::get('transactions-get-price', [TransactionController::class, 'getPrice'])->name('transactions.get-price');
 
     Route::get('signout', [AuthenticatedSessionController::class, 'signout'])->name('signout');
 });

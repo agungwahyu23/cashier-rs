@@ -57,6 +57,21 @@ return [
             'roles' => ['admin', 'marketing'],
         ],
 
+        // ====== TRANSAKSI ======
+        [
+            'label' => 'Transaksi',
+            'type' => 'header',
+            'roles' => ['admin', 'kasir'],
+        ],
+        [
+            'menu' => 'transactions',
+            'label' => 'Transaksi',
+            'icon' => 'fa-solid fa-cash-register',
+            'route' => 'transactions.index',
+            'routeIsActive' => 'transactions',
+            'roles' => ['admin', 'kasir'],
+        ],
+
         // ====== PENGATURAN ======
         [
             'label' => 'Pengaturan',

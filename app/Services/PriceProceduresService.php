@@ -22,7 +22,7 @@ class PriceProceduresService
     */
     public function getData($idProcedure) 
     {
-        return Cache::remember('data-price-procedure', now()->addMinutes(60), function () use ($idProcedure) 
+        return Cache::remember('data-price-procedure-' . $idProcedure, now()->addMinutes(60), function () use ($idProcedure) 
         {
             $token = Util::getToken();
             $baseUrl = 'https://recruitment.rsdeltasurya.com/api/v1/procedures/'.$idProcedure.'/prices';

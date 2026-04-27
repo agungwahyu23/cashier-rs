@@ -7,7 +7,6 @@ use App\Services\InsuranceService;
 use App\Services\VoucerService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Yajra\DataTables\Facades\DataTables;
 
 class VoucherController extends Controller
