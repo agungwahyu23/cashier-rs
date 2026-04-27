@@ -67,6 +67,54 @@
         });
     });
 
+    function payTransaction(id) {
+        Swal.fire({
+            title: 'Konfirmasi Pembayaran',
+            text: "Apakah Anda yakin ingin melakukan pembayaran untuk transaksi ini?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, Bayar!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var url = "{{ route('transactions.pay', ':id') }}";
+                url = url.replace(':id', id);
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                    },
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            Swal.fire(
+                                'Berhasil!',
+                                response.message,
+                                'success'
+                            );
+                            $('#customDataTable').DataTable().ajax.reload();
+                        } else {
+                            Swal.fire(
+                                'Gagal!',
+                                response.message,
+                                'error'
+                            );
+                        }
+                    },
+                    error: function(xhr) {
+                        Swal.fire(
+                            'Error!',
+                            'Terjadi kesalahan saat memproses pembayaran.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        })
+    }
+
     function deleteData(id) {
         Swal.fire({
             title: 'Apakah Anda yakin?',

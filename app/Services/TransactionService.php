@@ -38,8 +38,8 @@ class TransactionService
 
     public function getVoucherForInsurance($insuranceId)
     {
-        // $today = date('Y-m-d');
-        $today = date('2026-02-01');
+        $today = date('Y-m-d');
+        // $today = date('2026-02-01');
         return \App\Models\Voucher::where('insurance_id', $insuranceId)
             ->where('start_date', '<=', $today)
             ->where('end_date', '>=', $today)
@@ -140,6 +140,52 @@ class TransactionService
 
             return $transaction;
         });
+    }
+
+    public function updateTransaction($id, array $data) 
+    {
+        return DB::transaction(function () use ($id, $data) {
+            $auth = Auth::user();
+            
+            $transaction = $this->findById($id);
+            $insurance = $this->insuranceService->getById($data['insurance_id']);
+            
+            $transaction->update([
+                'user_id' => $auth->id ?? $transaction->user_id,
+                'insurance_id' => $data['insurance_id'],
+                'insurance_name' => $insurance['name'] ?? null,
+                'voucher_id' => $data['voucher_id'] ?? null,
+                'subtotal' => $data['subtotal'],
+                'total_discount' => $data['total_discount'] ?? 0,
+                'grand_total' => $data['grand_total'],
+                'updated_by' => ($auth->name ?? 'System') . ' (' . ($auth->id ?? '-') . ')',
+            ]);
+
+            $transaction->details()->delete();
+
+            foreach ($data['details'] as $detail) {
+                $transaction->details()->create([
+                    'procedure_id' => $detail['procedure_id'],
+                    'procedure_name' => $detail['procedure_name'],
+                    'price_id' => $detail['price_id'],
+                    'price' => $detail['price'],
+                    'price_start_date' => $detail['price_start_date'],
+                    'price_end_date' => $detail['price_end_date'],
+                    'qty' => $detail['qty'],
+                    'discount_per_item' => $detail['discount_per_item'] ?? 0,
+                    'subtotal' => $detail['subtotal'],
+                ]);
+            }
+
+            return $transaction;
+        });
+    }
+
+    public function updateStatus($id, $status)
+    {
+        $transaction = $this->findById($id);
+        $transaction->update(['status' => $status]);
+        return $transaction;
     }
 
     public function delete($id)

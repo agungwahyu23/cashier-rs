@@ -45,6 +45,7 @@ Route::middleware('auth')->group(function () {
     Route::get('transactions-data', [TransactionController::class, 'getDataTable'])->name('transactions.data');
     Route::get('transactions-get-voucher', [TransactionController::class, 'getVoucher'])->name('transactions.get-voucher');
     Route::get('transactions-get-price', [TransactionController::class, 'getPrice'])->name('transactions.get-price');
+    Route::post('transactions-pay/{id}', [TransactionController::class, 'pay'])->name('transactions.pay');
 
     Route::get('signout', [AuthenticatedSessionController::class, 'signout'])->name('signout');
 });

@@ -92,17 +92,17 @@
                                         <tr>
                                             <td colspan="4" class="text-right py-3">Total Sebelum Diskon Voucher</td>
                                             <td class="py-3"><span id="display_subtotal">Rp 0</span></td>
-                                            <td></td>
+                                            <td><input type="hidden" name="subtotal" id="subtotal" value="0" readonly></td>
                                         </tr>
                                         <tr class="text-success">
                                             <td colspan="4" class="text-right py-3">Diskon Voucher</td>
                                             <td class="py-3"><span id="display_voucher_discount">- Rp 0</span></td>
-                                            <td></td>
+                                            <td><input type="hidden" name="voucher_discount" id="voucher_discount" value="0" readonly></td>
                                         </tr>
                                         <tr class="bg-primary text-white">
                                             <td colspan="4" class="text-right py-3">GRAND TOTAL</td>
                                             <td class="py-3 font-weight-bolder" style="font-size: 1.2rem;"><span id="display_grand_total">Rp 0</span></td>
-                                            <td></td>
+                                            <td><input type="hidden" name="grand_total" id="grand_total" value="0" readonly></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -137,7 +137,7 @@
         </td>
         <td>
             <input type="text" name="price_text" class="form-control border-0 bg-transparent font-weight-bold" readonly value="0"> <!-- text -->
-            <input type="hidden" name="price" class="form-control border-0 bg-transparent font-weight-bold" readonly value="0"> <!-- hidden -->
+            <input type="hidden" name="price" id="price_val" class="form-control border-0 bg-transparent font-weight-bold" readonly value="0"> <!-- hidden -->
             <input type="hidden" name="price_start_date"> <!-- hidden -->
             <input type="hidden" name="price_end_date"> <!-- hidden -->
         </td>
@@ -177,6 +177,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // Event: change insureance
     insuranceSelect.addEventListener('change', function() {
         const insuranceId = this.value;
+
+        // Re-fetch prices and discounts for existing procedure rows
+        document.querySelectorAll('.detail-row').forEach(row => {
+            const procSelect = row.querySelector('.procedure-select');
+            if (procSelect && procSelect.value) {
+                procSelect.dispatchEvent(new Event('change'));
+            }
+        });
+
         if (!insuranceId) {
             resetVoucher();
             return;
@@ -271,7 +280,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const qty = parseInt(row.querySelector('[name="qty"]').value) || 0;
         const discount = parseFloat(row.querySelector('[name="discount_per_item"]').value) || 0;
         
-        const subtotal = (price - discount) * qty;
+        const subtotal = (price * qty) - discount;
         row.querySelector('[name="row_subtotal_text"]').value = formatIDR(subtotal);
         row.querySelector('[name="row_subtotal"]').value = subtotal;
         
@@ -280,29 +289,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function calculateGrandTotal() {
         let totalSubtotal = 0;
-        document.querySelectorAll('[name="row_subtotal"]').forEach(input => {
-            totalSubtotal += parseFloat(input.value) || 0;
+        let totalVoucher = 0;
+        
+        document.querySelectorAll('.detail-row').forEach(row => {
+            const price = parseFloat(row.querySelector('[name="price"]').value) || 0;
+            const qty = parseInt(row.querySelector('[name="qty"]').value) || 0;
+            const discount = parseFloat(row.querySelector('[name="discount_per_item"]').value) || 0;
+            
+            totalSubtotal += (price * qty);
+            totalVoucher += discount;
         });
 
-        let voucherDiscount = 0;
-        if (activeVoucher) {
-            if (activeVoucher.type === 'percentage') {
-                voucherDiscount = (totalSubtotal * (activeVoucher.value / 100));
-                if (activeVoucher.max_discount && voucherDiscount > activeVoucher.max_discount) {
-                    voucherDiscount = activeVoucher.max_discount;
-                }
-            } else {
-                voucherDiscount = activeVoucher.value;
-            }
-        }
+        const grandTotal = Math.max(0, totalSubtotal - totalVoucher);
 
-        const grandTotal = Math.max(0, totalSubtotal - voucherDiscount);
+        document.getElementById('subtotal').value = totalSubtotal;
+        document.getElementById('voucher_discount').value = totalVoucher;
+        document.getElementById('grand_total').value = grandTotal;
 
         document.getElementById('display_subtotal').textContent = 'Rp ' + formatIDR(totalSubtotal);
-        document.getElementById('display_voucher_discount').textContent = '- Rp ' + formatIDR(voucherDiscount);
+        document.getElementById('display_voucher_discount').textContent = '- Rp ' + formatIDR(totalVoucher);
         document.getElementById('display_grand_total').textContent = 'Rp ' + formatIDR(grandTotal);
-
-        // Hidden fields for submission would go here if needed, but we'll collect from JS
     }
 
     function resetVoucher(text = "Pilih asuransi dulu...") {
@@ -330,16 +336,14 @@ document.addEventListener('DOMContentLoaded', function() {
             invoice_number: document.querySelector('[name="invoice_number"]').value,
             insurance_id: document.querySelector('[name="insurance_id"]').value,
             voucher_id: document.querySelector('[name="voucher_id"]').value,
-            subtotal: 0,
-            total_discount: 0,
-            grand_total: 0,
+            subtotal: document.querySelector('[name="subtotal"]').value,
+            total_discount: document.querySelector('[name="voucher_discount"]').value,
+            grand_total: document.querySelector('[name="grand_total"]').value,
             details: []
         };
 
-        let totalSub = 0;
         document.querySelectorAll('.detail-row').forEach(row => {
             const sub = parseFloat(row.querySelector('[name="row_subtotal"]').value);
-            totalSub += sub;
             formData.details.push({
                 procedure_id: row.querySelector('[name="procedure_id"]').value,
                 procedure_name: row.querySelector('[name="procedure_name"]').value,
@@ -352,21 +356,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 subtotal: sub
             });
         });
-
-        formData.subtotal = totalSub;
-        
-        // Re-calculate discount for safety
-        let vDisc = 0;
-        if (activeVoucher) {
-            if (activeVoucher.type === 'percentage') {
-                vDisc = (totalSub * (activeVoucher.value / 100));
-                if (activeVoucher.max_discount && vDisc > activeVoucher.max_discount) vDisc = activeVoucher.max_discount;
-            } else {
-                vDisc = activeVoucher.value;
-            }
-        }
-        formData.total_discount = vDisc;
-        formData.grand_total = Math.max(0, totalSub - vDisc);
 
         fetch(`{{ route('transactions.store') }}`, {
             method: 'POST',
