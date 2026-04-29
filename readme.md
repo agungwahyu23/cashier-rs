@@ -14,8 +14,8 @@ Pastikan Anda telah menginstal perangkat lunak berikut di komputer Anda:
 
 1. **Clone Repositori**
    ```bash
-   git clone https://github.com/agungwahyu23/cashier-rs-delta-surya.git
-   cd cashier-rs-delta-surya
+   git clone https://github.com/agungwahyu23/cashier-rs.git
+   cd cashier-rs
    ```
 
 2. **Instal Dependensi PHP**
