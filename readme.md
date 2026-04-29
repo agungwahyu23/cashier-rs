@@ -42,11 +42,14 @@ Pastikan Anda telah menginstal perangkat lunak berikut di komputer Anda:
    MAIL_MAILER=smtp
    MAIL_HOST=smtp.gmail.com
    MAIL_PORT=587
-   MAIL_USERNAME=email_anda@gmail.com
-   MAIL_PASSWORD='password app dari 2FA'
+   MAIL_USERNAME=techaksara@gmail.com
+   MAIL_PASSWORD='susa fkwn dskd fgdk'
    MAIL_ENCRYPTION=tls
-   MAIL_FROM_ADDRESS=email_anda@gmail.com
+   MAIL_FROM_ADDRESS=techaksara@gmail.com
    MAIL_FROM_NAME="${APP_NAME}"
+
+   AUTH_USERNAME="agungwahyu23699@gmail.com"
+   AUTH_PASSWORD="087754314117"
 
 
    ```
